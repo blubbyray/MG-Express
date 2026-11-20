@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MG Express</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --blue: #0b6ef5;
+    --blue-deep: #0b1f4d;
+    --navy: #edf4ff;
+    --cyan: #19bfd6;
+    --sky: #172a40;
+    --pale-blue: #0d1d2e;
+    --line-blue: rgba(140, 175, 255, 0.18);
+    --text: #edf4ff;
+    --muted: #b2bfd7;
+    --white: #dfeaff;
+    --bg:
+      radial-gradient(ellipse at 8% 18%, rgba(11, 110, 245, 0.13), transparent 30%),
+      radial-gradient(ellipse at 92% 52%, rgba(11, 110, 245, 0.11), transparent 28%),
+      radial-gradient(ellipse at 32% 92%, rgba(25, 191, 214, 0.07), transparent 26%),
+      linear-gradient(180deg, #071524 0%, #0d1d2e 35%, #11253f 100%);
+    --header-bg: rgba(9, 17, 30, 0.8);
+    --card-bg: linear-gradient(180deg, rgba(17, 28, 42, 0.94), rgba(13, 25, 39, 0.94));
+    --section-bg: linear-gradient(135deg, rgba(12, 26, 40, 0.96), rgba(15, 24, 35, 0.96));
+    --shadow: rgba(0, 0, 0, 0.34);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    background-size: 145% 145%, 145% 145%, 145% 145%, 100% 100%;
+    animation: ambient-drift 24s ease-in-out infinite alternate;
+  }
+  a { text-decoration: none; color: inherit; }
+
+  @keyframes ambient-drift {
+    from { background-position: 0% 0%, 100% 30%, 20% 100%, 0 0; }
+    to { background-position: 30% 20%, 70% 80%, 80% 60%, 0 0; }
+  }
+  @keyframes rise-in {
+    from { opacity: 0; transform: translateY(22px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes hero-image-in {
+    from { transform: scale(1.055); }
+    to { transform: scale(1); }
+  }
+  @keyframes badge-glow {
+    0%, 100% { box-shadow: 0 0 0 rgba(25, 191, 214, 0); }
+    50% { box-shadow: 0 0 18px rgba(25, 191, 214, 0.18); }
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 0 32px;
+    height: 100px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--line-blue);
+    box-shadow: 0 12px 28px var(--shadow);
+    backdrop-filter: blur(10px);
+    animation: rise-in 0.65s ease-out both;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand img { height: 64px; width: auto; display: block; }
+  .brand-text strong {
+    display: block;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1.1;
+    letter-spacing: 0.04em;
+  }
+  .brand-text span {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px; letter-spacing: 0.18em; color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  nav { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+  nav a {
+    font-size: 16px;
+    padding: 8px 12px;
+    color: var(--navy);
+    border-radius: 999px;
+    transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  }
+  nav a.active,
+  nav a:hover {
+    transform: translateY(-2px);
+    color: var(--white);
+    background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 100%);
+    box-shadow: 0 8px 18px rgba(11, 110, 245, 0.2);
+  }
+  nav a:focus-visible,
+  .banner-btn:focus-visible,
+  .footer-email-button:focus-visible,
+  .footer-whatsapp:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 3px;
+  }
+
+  .brand img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+  .brand:hover img {
+    transform: rotate(-4deg) scale(1.05);
+    filter: drop-shadow(0 0 10px rgba(25, 191, 214, 0.3));
+  }
+
+  .lang {
+    appearance: none;
+    min-width: 78px;
+    height: 42px;
+    padding: 0 30px 0 12px;
+    border: 1px solid rgba(25, 191, 214, 0.35);
+    border-radius: 999px;
+    background:
+      linear-gradient(45deg, transparent 50%, var(--navy) 50%) calc(100% - 15px) 17px / 5px 5px no-repeat,
+      linear-gradient(135deg, var(--navy) 50%, transparent 50%) calc(100% - 10px) 17px / 5px 5px no-repeat,
+      rgba(17, 42, 64, 0.96);
+    color: var(--navy);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .lang:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 3px;
+  }
+  .lang option { background: #0d1d2e; color: #edf4ff; }
+
+  .banner-wrap {
+    position: relative;
+    padding: 28px 24px 0;
+    background: radial-gradient(circle at top, rgba(25, 191, 214, 0.18), transparent 42%);
+  }
+
+  .banner-shell {
+    position: relative;
+    width: min(100%, 1200px);
+    margin: 0 auto;
+    border-radius: 26px;
+    overflow: hidden;
+    box-shadow: 0 24px 52px rgba(13, 26, 57, 0.18);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    animation: rise-in 0.8s 0.12s ease-out both;
+  }
+  .banner {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 360px;
+    object-fit: cover;
+    filter: saturate(1.1) contrast(1.04);
+    animation: hero-image-in 1.8s ease-out both;
+  }
+  .banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(8, 20, 44, 0.78) 0%, rgba(8, 20, 44, 0.42) 34%, rgba(8, 20, 44, 0.12) 100%);
+  }
+  .banner-content {
+    position: absolute;
+    left: clamp(18px, 4vw, 52px);
+    bottom: clamp(18px, 4vw, 48px);
+    z-index: 1;
+    max-width: 520px;
+  }
+  .banner-badge {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #eef7ff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    backdrop-filter: blur(4px);
+    animation: badge-glow 4s 1.2s ease-in-out infinite;
+  }
+  .banner-content h1 {
+    color: #fff;
+    font-size: clamp(28px, 4vw, 52px);
+    line-height: 1.08;
+    margin-bottom: 12px;
+    letter-spacing: -0.04em;
+  }
+  .banner-content p {
+    color: rgba(255,255,255,0.88);
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 500px;
+  }
+  .banner-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+  }
+  .banner-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-weight: 700;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .banner-btn.primary {
+    background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 100%);
+    color: #fff;
+    box-shadow: 0 12px 24px rgba(11, 110, 245, 0.35);
+  }
+  .banner-btn.secondary {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    backdrop-filter: blur(6px);
+  }
+  .banner-btn:hover {
+    transform: translateY(-3px) scale(1.025);
+    box-shadow: 0 12px 26px rgba(11, 110, 245, 0.28);
+  }
+
+  .home-section {
+    max-width: 1200px;
+    margin: 56px auto 0;
+    padding: 48px;
+    scroll-margin-top: 24px;
+    border-radius: 24px;
+    background: var(--section-bg);
+    border: 1px solid var(--line-blue);
+    box-shadow: 0 16px 36px var(--shadow);
+    animation: rise-in 0.75s 0.25s ease-out both;
+  }
+  .home-intro {
+    max-width: 760px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+  .home-logo {
+    display: block;
+    width: min(100%, 360px);
+    height: auto;
+    margin: 0 auto 20px;
+    transition: transform 0.35s ease, filter 0.35s ease;
+  }
+  .home-logo:hover {
+    transform: scale(1.025);
+    filter: drop-shadow(0 8px 18px rgba(25, 191, 214, 0.18));
+  }
+  .home-intro h1 {
+    margin-bottom: 14px;
+    color: var(--navy);
+    font-size: clamp(28px, 4vw, 40px);
+  }
+  .home-intro p,
+  .home-card p {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  .home-values {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .home-card {
+    padding: 28px;
+    border: 1px solid var(--line-blue);
+    border-top: 4px solid var(--blue);
+    border-radius: 18px;
+    background: var(--card-bg);
+    box-shadow: 0 10px 24px var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .home-card:nth-child(2) {
+    border-top-color: var(--cyan);
+  }
+  .home-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 34px var(--shadow);
+    border-color: rgba(25, 191, 214, 0.4);
+  }
+  .home-card h2 {
+    margin-bottom: 10px;
+    color: var(--navy);
+    font-size: 21px;
+  }
+
+  .services-section {
+    width: min(100% - 48px, 1200px);
+    margin: 56px auto 0;
+    padding: 48px;
+    scroll-margin-top: 120px;
+    border: 1px solid var(--line-blue);
+    border-radius: 24px;
+    background: var(--section-bg);
+    box-shadow: 0 16px 36px var(--shadow);
+    animation: rise-in 0.75s 0.4s ease-out both;
+  }
+  .services-heading {
+    margin: 0 0 12px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line-blue);
+    text-align: center;
+  }
+  .services-heading::before {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 7px 12px;
+    border: 1px solid rgba(11, 110, 245, 0.16);
+    border-radius: 999px;
+    background: rgba(11, 110, 245, 0.08);
+    color: var(--blue);
+    content: "ONZE DIENSTEN";
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+  }
+  html[lang="en"] .services-heading::before { content: "OUR SERVICES"; }
+  .services-heading h2 {
+    margin-bottom: 0;
+    color: var(--navy);
+    font-size: clamp(28px, 4vw, 40px);
+    letter-spacing: -0.035em;
+  }
+  .services-heading h2::after {
+    display: block;
+    width: 48px;
+    height: 4px;
+    margin: 12px auto 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    content: "";
+  }
+  .services-grid {
+    display: block;
+    padding-top: 12px;
+  }
+  .service-item {
+    border-bottom: 1px solid var(--line-blue);
+  }
+  .service-item:last-child {
+    border-bottom: 0;
+  }
+  .service-item summary {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr) 24px;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 12px;
+    cursor: pointer;
+    list-style: none;
+    transition: padding 0.25s ease, background 0.25s ease;
+  }
+  .service-item summary:hover {
+    padding-right: 18px;
+    padding-left: 18px;
+    background: linear-gradient(90deg, rgba(11, 110, 245, 0.07), transparent);
+  }
+  .service-item summary:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: -2px;
+    border-radius: 12px;
+  }
+  .service-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .service-item summary::after {
+    display: grid;
+    width: 24px;
+    height: 24px;
+    place-items: center;
+    color: var(--cyan);
+    content: "+";
+    font-size: 24px;
+    font-weight: 400;
+    transition: transform 0.2s ease;
+  }
+  .service-item[open] summary::after {
+    transform: rotate(45deg);
+  }
+  .service-icon {
+    display: grid;
+    width: 58px;
+    height: 58px;
+    place-items: center;
+    border: 1px solid rgba(25, 191, 214, 0.22);
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(11, 110, 245, 0.18), rgba(25, 191, 214, 0.1));
+    color: var(--cyan);
+    transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  }
+  .service-item summary:hover .service-icon,
+  .service-item[open] .service-icon {
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    color: #fff;
+  }
+  .service-item summary:hover .service-icon {
+    transform: scale(1.08) rotate(-5deg);
+  }
+  .service-icon svg {
+    width: 34px;
+    height: 34px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+  }
+  .service-item-content {
+    padding: 0 56px 24px 90px;
+    animation: rise-in 0.35s ease-out both;
+  }
+  .service-item h3 {
+    margin: 0;
+    color: var(--navy);
+    font-size: clamp(20px, 2.4vw, 27px);
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+  }
+  .service-item[open] h3 {
+    color: var(--cyan);
+  }
+  .service-item ul {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+    list-style: none;
+  }
+  .service-item li {
+    display: grid;
+    grid-template-columns: 9px minmax(0, 1fr);
+    align-items: start;
+    gap: 10px;
+  }
+  .service-item li::before {
+    width: 8px;
+    height: 8px;
+    margin-top: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    box-shadow: 0 0 0 3px rgba(11, 110, 245, 0.1);
+    content: "";
+  }
+
+  .site-footer {
+    margin-top: 64px;
+    padding: 56px 24px 20px;
+    border-top: 1px solid var(--line-blue);
+    background:
+      radial-gradient(ellipse at 82% 0%, rgba(11, 110, 245, 0.16), transparent 38%),
+      linear-gradient(180deg, #0b1a2a 0%, #071524 100%);
+    scroll-margin-top: 120px;
+    animation: rise-in 0.75s 0.55s ease-out both;
+  }
+  .footer-main,
+  .footer-bottom {
+    width: min(100%, 1120px);
+    margin: 0 auto;
+  }
+  .footer-main {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 64px;
+    padding-bottom: 42px;
+  }
+  .footer-kicker {
+    margin-bottom: 12px;
+    color: var(--cyan);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .footer-intro h2 {
+    max-width: 430px;
+    margin-bottom: 14px;
+    color: var(--navy);
+    font-size: clamp(26px, 3.5vw, 36px);
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+  }
+  .footer-intro p {
+    max-width: 430px;
+    margin-bottom: 22px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .footer-email-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border: 1px solid rgba(25, 191, 214, 0.35);
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(11, 110, 245, 0.18), rgba(25, 191, 214, 0.1));
+    color: var(--navy);
+    font-size: 14px;
+    font-weight: 700;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .footer-email-button:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, var(--blue), #138abf);
+  }
+  .footer-email-button svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+  .footer-contact-list {
+    display: grid;
+    align-content: center;
+    gap: 0;
+    font-style: normal;
+  }
+  .footer-contact-item {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
+    min-height: 82px;
+    border-bottom: 1px solid var(--line-blue);
+    transition: transform 0.2s ease;
+  }
+  .footer-contact-item:hover {
+    transform: translateX(5px);
+  }
+  .footer-contact-item:last-child {
+    border-bottom: 0;
+  }
+  .footer-contact-icon {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border: 1px solid rgba(25, 191, 214, 0.2);
+    border-radius: 14px;
+    background: rgba(25, 191, 214, 0.08);
+    color: var(--cyan);
+    transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  }
+  .footer-contact-item:hover .footer-contact-icon {
+    transform: scale(1.08);
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    color: #fff;
+  }
+  .footer-contact-icon svg {
+    width: 21px;
+    height: 21px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+  }
+  .footer-contact-label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .footer-contact-value {
+    color: var(--navy);
+    font-size: 16px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    transition: color 0.2s ease;
+  }
+  a.footer-contact-value:hover {
+    color: var(--cyan);
+  }
+  .footer-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 10px;
+    color: var(--cyan);
+    font-size: 13px;
+    font-weight: 700;
+    transition: color 0.2s ease, transform 0.2s ease, text-shadow 0.2s ease;
+  }
+  .footer-whatsapp:hover {
+    transform: translateY(-2px);
+    color: #69efaa;
+    text-shadow: 0 0 12px rgba(37, 211, 102, 0.35);
+  }
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line-blue);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .footer-brand {
+    color: var(--navy);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+  @supports (animation-timeline: view()) {
+    .home-section,
+    .services-section,
+    .site-footer {
+      animation: rise-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 30%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  @media (max-width: 900px) {
+    header {
+      height: auto;
+      min-height: 100px;
+      flex-wrap: wrap;
+      padding: 18px 24px;
+      row-gap: 14px;
+    }
+
+    nav {
+      order: 0;
+      width: auto;
+      justify-content: center;
+    }
+
+  }
+
+  @media (max-width: 600px) {
+    header {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+    }
+
+    .brand img {
+      height: 46px;
+    }
+
+    .brand {
+      flex: 0 1 auto;
+      gap: 8px;
+    }
+
+    .brand-text strong {
+      font-size: 17px;
+    }
+
+    .brand-text span {
+      font-size: 9px;
+    }
+
+    nav {
+      order: 0;
+      display: grid;
+      grid-template-columns: repeat(2, auto);
+      gap: 4px 12px;
+      flex: 0 0 auto;
+      justify-content: end;
+    }
+
+    nav a {
+      font-size: 13px;
+    }
+
+    .banner-wrap {
+      padding: 18px 12px 0;
+    }
+
+    .banner {
+      border-radius: 10px;
+    }
+
+    .home-section {
+      width: 100%;
+      margin-top: 36px;
+      padding: 28px 20px;
+    }
+
+    .home-intro {
+      margin-bottom: 24px;
+    }
+
+    .home-values {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .services-section {
+      width: calc(100% - 24px);
+      margin-top: 36px;
+      padding: 28px 20px;
+    }
+
+    .service-item summary {
+      grid-template-columns: 46px minmax(0, 1fr) 24px;
+      gap: 12px;
+      padding: 16px 4px;
+    }
+
+    .service-icon {
+      width: 46px;
+      height: 46px;
+    }
+
+    .service-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .service-item-content {
+      padding: 0 8px 22px 62px;
+    }
+
+    .site-footer {
+      margin-top: 40px;
+      padding: 40px 20px 18px;
+    }
+
+    .footer-main {
+      grid-template-columns: 1fr;
+      gap: 28px;
+      padding-bottom: 28px;
+    }
+
+    .footer-contact-item {
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 13px;
+      min-height: 74px;
+    }
+
+    .footer-contact-icon {
+      width: 42px;
+      height: 42px;
+    }
+
+    .footer-contact-value {
+      font-size: 15px;
+    }
+
+    .footer-bottom {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .home-card {
+      padding: 22px;
+    }
+  }
+ 
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="#home">
+    <img src="Logo mark Color.png" alt="MG Express logo">
+    <div class="brand-text">
+      <strong>MG EXPRESS</strong>
+      <span data-i18n="tagline">Inklaringen zonder zorgen</span>
+    </div>
+  </a>
+
+  <nav>
+    <a data-i18n="navHome" href="#home">Home</a>
+    <a data-i18n="navAbout" href="#about">Over ons</a>
+    <a data-i18n="navServices" href="#services">Diensten</a>
+    <a data-i18n="navContact" href="#contact">Contact</a>
+  </nav>
+  <select class="lang" id="language-select" aria-label="Taal / Language">
+    <option value="nl">NL</option>
+    <option value="en">EN</option>
+  </select>
+</header>
+
+<main class="banner-wrap" id="home">
+  <div class="banner-shell">
+    <img class="banner" src="Pasted 2026-11-14 at 8.59.24 PM.png" alt="mg express">
+    <div class="banner-overlay"></div>
+    <div class="banner-content">
+      <span class="banner-badge" data-i18n="badge">Douane &amp; logistiek</span>
+      <h1 data-i18n="tagline">Inklaringen zonder zorgen</h1>
+      <p data-i18n="heroText">Snelle, betrouwbare en klantgerichte dienstverlening voor import, export en logistieke processen.</p>
+      <div class="banner-actions">
+        <a class="banner-btn primary" data-i18n="contactUs" href="#contact">Neem contact op</a>
+        <a class="banner-btn secondary" data-i18n="viewServices" href="#services">Bekijk diensten</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="home-section" id="about">
+    <div class="home-intro">
+      <img class="home-logo" src="Primary Logo Color.png" alt="MG Express">
+      <p data-i18n="aboutText">MG Express is gespecialiseerd in douane-inklaringen en logistieke dienstverlening. Wij begeleiden import- en exportprocessen van A tot Z en zorgen ervoor dat goederen snel, correct en volgens de geldende regels worden ingeklaard.</p>
+    </div>
+
+    <div class="home-values">
+      <article class="home-card">
+        <h2 data-i18n="missionTitle">Missie</h2>
+        <p data-i18n="missionText">Wij streven ernaar elke dag een snelle, zorgeloze en betrouwbare inklaring van goederen te realiseren. Dat doen we met vakmanschap, duidelijke communicatie en klantgerichte service.</p>
+      </article>
+      <article class="home-card">
+        <h2 data-i18n="visionTitle">Visie</h2>
+        <p data-i18n="visionText">Tegen 2030 wil MG Express uitgroeien tot de meest vertrouwde partner in douanediensten in Suriname en de regio, bekend om onze efficiëntie, expertise en toewijding aan klanttevredenheid.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="services-section" id="services" aria-labelledby="services-title">
+    <div class="services-heading">
+      <h2 id="services-title" data-i18n="tagline">Inklaringen zonder zorgen</h2>
+    </div>
+    <div class="services-grid">
+      <details class="service-item" open>
+        <summary>
+          <span class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5M10 13h5M10 17h5"/><path d="m3 11 2 2-2 2"/></svg>
+          </span>
+          <h3 data-i18n="customsTitle">Douane-inklaringen (import &amp; export)</h3>
+        </summary>
+        <div class="service-item-content">
+          <ul>
+            <li data-i18n="customs1">Afhandeling van douaneprocedures bij de invoer en uitvoer van goederen.</li>
+            <li data-i18n="customs2">Verzorgen van de benodigde documenten en communicatie met douaneautoriteiten.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="service-item">
+        <summary>
+          <span class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M3 7h12v10H3zM15 10h3l3 3v4h-6z"/><path d="M7 7v10M11 7v10M3 11h12M7 20h.01M18 20h.01"/><path d="M5 4h14"/></svg>
+          </span>
+          <h3 data-i18n="transitTitle">Transito</h3>
+        </summary>
+        <div class="service-item-content">
+          <ul>
+            <li data-i18n="transit1">Regelen van tijdelijke opslag of doorvoer van goederen via Suriname naar een andere bestemming.</li>
+            <li data-i18n="transit2">Begeleiding van goederen die onder douanetoezicht staan.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="service-item">
+        <summary>
+          <span class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M3 6h11v11H3zM14 10h4l3 3v4h-7z"/><path d="M7 20h.01M18 20h.01M7 17v3M18 17v3M3 10h11"/></svg>
+          </span>
+          <h3 data-i18n="truckingTitle">Trucking &amp; vrachtvervoer</h3>
+        </summary>
+        <div class="service-item-content">
+          <ul>
+            <li data-i18n="trucking1">Transport van goederen van en naar havens, luchthavens en opslaglocaties.</li>
+            <li data-i18n="trucking2">Betrouwbare en tijdige leveringen met externe transporteurs.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="service-item">
+        <summary>
+          <span class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="m3 8 9-5 9 5-9 5zM3 8v9l9 5 9-5V8M12 13v9"/><path d="m7.5 5.5 9 5"/></svg>
+          </span>
+          <h3 data-i18n="movingTitle">Internationale verhuizingen</h3>
+        </summary>
+        <div class="service-item-content">
+          <ul>
+            <li data-i18n="moving1">Verhuisservice voor particulieren en bedrijven bij internationale relocaties.</li>
+            <li data-i18n="moving2">Coördinatie van de volledige douane- en transportafhandeling.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="service-item">
+        <summary>
+          <span class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M3 7h18v13H3zM7 7V4h10v3M7 11h10M7 15h4"/><path d="m14 15 2 2 4-4"/></svg>
+          </span>
+          <h3 data-i18n="cargoTitle">Cargohandling &amp; logistiek</h3>
+        </summary>
+        <div class="service-item-content">
+          <ul>
+            <li data-i18n="cargo1">Fysieke afhandeling van vracht: laden, lossen, controleren en verplaatsen.</li>
+            <li data-i18n="cargo2">Efficiënt voorraad- en documentbeheer.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="contact" aria-labelledby="contact-title">
+  <div class="footer-main">
+    <div class="footer-intro">
+      <p class="footer-kicker" data-i18n="navContact">Contact</p>
+      <h2 id="contact-title" data-i18n="contactTitle">We helpen u graag verder.</h2>
+      <p data-i18n="contactText">Neem contact op met MG Express voor vragen over inklaringen en logistieke diensten.</p>
+      <a class="footer-email-button" href="mailto:mg.inklaringen@gmail.com">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        <span data-i18n="sendEmail">Stuur ons een e-mail</span>
+      </a>
+    </div>
+
+    <address class="footer-contact-list">
+      <div class="footer-contact-item">
+        <span class="footer-contact-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a15 15 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>
+        </span>
+        <span>
+          <span class="footer-contact-label" data-i18n="phoneLabel">Telefoon</span>
+          <a class="footer-contact-value" href="tel:+5978711844">+597 8711844</a>
+          <a class="footer-whatsapp" href="https://wa.me/5978711844" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        </span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-contact-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        </span>
+        <span>
+          <span class="footer-contact-label" data-i18n="emailLabel">E-mail</span>
+          <a class="footer-contact-value" href="mailto:mg.inklaringen@gmail.com">mg.inklaringen@gmail.com</a>
+        </span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-contact-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        </span>
+        <span>
+          <span class="footer-contact-label" data-i18n="addressLabel">Adres</span>
+          <span class="footer-contact-value">Garnizoenspad 33</span>
+        </span>
+      </div>
+    </address>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-brand">MG EXPRESS</span>
+    <span data-i18n="tagline">Inklaringen zonder zorgen</span>
+  </div>
+</footer>
+
+<script>
+  const translations = {
+    nl: {
+      tagline: "Inklaringen zonder zorgen",
+      navHome: "Home",
+      navAbout: "Over ons",
+      navServices: "Diensten",
+      navContact: "Contact",
+      badge: "Douane & logistiek",
+      heroText: "Snelle, betrouwbare en klantgerichte dienstverlening voor import, export en logistieke processen.",
+      contactUs: "Neem contact op",
+      viewServices: "Bekijk diensten",
+      aboutText: "MG Express is gespecialiseerd in douane-inklaringen en logistieke dienstverlening. Wij begeleiden import- en exportprocessen van A tot Z en zorgen ervoor dat goederen snel, correct en volgens de geldende regels worden ingeklaard.",
+      missionTitle: "Missie",
+      missionText: "Wij streven ernaar elke dag een snelle, zorgeloze en betrouwbare inklaring van goederen te realiseren. Dat doen we met vakmanschap, duidelijke communicatie en klantgerichte service.",
+      visionTitle: "Visie",
+      visionText: "Tegen 2030 wil MG Express uitgroeien tot de meest vertrouwde partner in douanediensten in Suriname en de regio, bekend om onze efficiëntie, expertise en toewijding aan klanttevredenheid.",
+      customsTitle: "Douane-inklaringen (import & export)",
+      customs1: "Afhandeling van douaneprocedures bij de invoer en uitvoer van goederen.",
+      customs2: "Verzorgen van de benodigde documenten en communicatie met douaneautoriteiten.",
+      transitTitle: "Transito",
+      transit1: "Regelen van tijdelijke opslag of doorvoer van goederen via Suriname naar een andere bestemming.",
+      transit2: "Begeleiding van goederen die onder douanetoezicht staan.",
+      truckingTitle: "Trucking & vrachtvervoer",
+      trucking1: "Transport van goederen van en naar havens, luchthavens en opslaglocaties.",
+      trucking2: "Betrouwbare en tijdige leveringen met externe transporteurs.",
+      movingTitle: "Internationale verhuizingen",
+      moving1: "Verhuisservice voor particulieren en bedrijven bij internationale relocaties.",
+      moving2: "Coördinatie van de volledige douane- en transportafhandeling.",
+      cargoTitle: "Cargohandling & logistiek",
+      cargo1: "Fysieke afhandeling van vracht: laden, lossen, controleren en verplaatsen.",
+      cargo2: "Efficiënt voorraad- en documentbeheer.",
+      contactTitle: "We helpen u graag verder.",
+      contactText: "Neem contact op met MG Express voor vragen over inklaringen en logistieke diensten.",
+      sendEmail: "Stuur ons een e-mail",
+      phoneLabel: "Telefoon",
+      emailLabel: "E-mail",
+      addressLabel: "Adres"
+    },
+    en: {
+      tagline: "Clearance without worries",
+      navHome: "Home",
+      navAbout: "About",
+      navServices: "Services",
+      navContact: "Contact",
+      badge: "Customs & logistics",
+      heroText: "Fast, reliable and customer-focused services for import, export and logistics processes.",
+      contactUs: "Get in touch",
+      viewServices: "View services",
+      aboutText: "MG Express specializes in customs clearance and logistics services. We guide import and export processes from A to Z and ensure that goods are cleared quickly, correctly and in accordance with current regulations.",
+      missionTitle: "Mission",
+      missionText: "Every day, we aim to provide fast, worry-free and reliable cargo clearance. We do this with craftsmanship, clear communication and customer-focused service.",
+      visionTitle: "Vision",
+      visionText: "By 2030, MG Express aims to become the most trusted partner in customs services in Suriname and the region, known for our efficiency, expertise and commitment to customer satisfaction.",
+      customsTitle: "Customs clearance (import & export)",
+      customs1: "Handling customs procedures for the import and export of goods.",
+      customs2: "Preparing required documents and communicating with customs authorities.",
+      transitTitle: "Transit",
+      transit1: "Arranging temporary storage or transit of goods through Suriname to another destination.",
+      transit2: "Monitoring goods that are under customs supervision.",
+      truckingTitle: "Trucking & freight transport",
+      trucking1: "Transporting goods to and from ports, airports and storage locations.",
+      trucking2: "Reliable and timely deliveries with external carriers.",
+      movingTitle: "International moving",
+      moving1: "Moving services for individuals and companies during international relocations.",
+      moving2: "Coordination of the complete customs and transport process.",
+      cargoTitle: "Cargo handling & logistics",
+      cargo1: "Physical cargo handling: loading, unloading, checking and moving.",
+      cargo2: "Efficient inventory and document management.",
+      contactTitle: "We are happy to help.",
+      contactText: "Contact MG Express with any questions about customs clearance and logistics services.",
+      sendEmail: "Send us an email",
+      phoneLabel: "Phone",
+      emailLabel: "Email",
+      addressLabel: "Address"
+    }
+  };
+
+  const languageSelect = document.getElementById("language-select");
+
+  function setLanguage(language) {
+    const selectedLanguage = translations[language] ? language : "nl";
+    document.documentElement.lang = selectedLanguage;
+    languageSelect.value = selectedLanguage;
+
+    document.querySelectorAll("[data-i18n]").forEach((element) => {
+      const key = element.dataset.i18n;
+      if (translations[selectedLanguage][key]) {
+        element.textContent = translations[selectedLanguage][key];
+      }
+    });
+
+    localStorage.setItem("mgexpress-language", selectedLanguage);
+  }
+
+  languageSelect.addEventListener("change", (event) => {
+    setLanguage(event.target.value);
+  });
+
+  setLanguage(localStorage.getItem("mgexpress-language") || "nl");
+</script>
+
+</body>
+</html>
